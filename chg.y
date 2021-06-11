@@ -8,6 +8,9 @@
   extern FILE *yyout;
   int available[26],varcheck=0,switch_check=0;
   float var_switch;
+  int ifval[1000];
+  int ifptr = -1;
+  int ifdone[1000];
   float value[1000];
 %}
 
@@ -24,10 +27,9 @@
 %type <dtype> EXPRESSION
 %type <dtype> STATEMENT
 %type <dtype> LOOP
-%type <dtype> IF_ELSE
 %type <dtype> istate
 
-%token MAIN_FUNC INT FLOAT INPUT OUTPUT ADD SUB MUL DIV EXPONEN SQR SQRT CUBE SINE COSINE TANGENT LN EQUALS LESS_THAN GREATER_THAN LESS_EQUALS GREATER_EQUALS NE COMA SEMI COLON LFBR RFBR LB RB FACTORIAL Leap_Year PRIME  EVEN_ODD SUM_OF_NUMBERS IF ELSE FOR WHILE SWITCH DEFAULT
+%token MAIN_FUNC INT FLOAT INPUT OUTPUT ADD SUB MUL DIV EXPONEN SQR SQRT CUBE SINE COSINE TANGENT LN EQUALS LESS_THAN GREATER_THAN LESS_EQUALS GREATER_EQUALS NE COMA SEMI COLON LFBR RFBR LB RB FACTORIAL Leap_Year PRIME EVEN_ODD SUM_OF_NUMBERS IF ELSE ELSEIF FOR WHILE SWITCH DEFAULT
 %nonassoc IF
 %nonassoc ELSE
 %left LESS_THAN GREATER_THAN LESS_EQUALS GREATER_EQUALS
@@ -42,19 +44,10 @@ program:
     ; 
 CSTATEMENT:
     | CSTATEMENT STATEMENT 
-  | CSTATEMENT FUNCTIONS
-  | CSTATEMENT LOOP
-  | CSTATEMENT SWITCH_CASE
-    | CSTATEMENT IF_ELSE    { 
-                              if($2) 
-                {  
-                    fprintf(yyout,"Value of Expression in Valid Condition: %.2f\n",$2); 
-                }
-                else
-                {
-                   fprintf(yyout,"Condition false\n");
-                }
-                }
+    | CSTATEMENT FUNCTIONS
+    | CSTATEMENT LOOP
+    | CSTATEMENT SWITCH_CASE
+    | CSTATEMENT ifelse  
     | CSTATEMENT DECLARATION
     ;
 
@@ -260,36 +253,48 @@ CASE    : /* empty */
                     }
                 ;     
 
+        
 
-IF_ELSE:
-    IF EXPRESSION LB istate SEMI RB
-                          {
-                if($2) 
-                {
-                    $$ = $4;
-                }
-                else
-                {
-                    $$ = 0;
-                }
-              }
-    | IF EXPRESSION LB istate SEMI RB ELSE LB istate SEMI RB 
-                          {
-                if($2)
-                {
-                  $$ = $4;
-                  }
-                  else
-                  {
-                  $$ = $9;
-                }
-              }
-    | IF EXPRESSION LB IF_ELSE RB ELSE LB IF_ELSE RB 
-                            {
-                                if($2) { $$ = $4; }
-                                else   { $$ = $8; }
-                            }   
-    ;
+ifelse  : IF LFBR ifexp RFBR LB istate SEMI RB elseif
+                    {
+                        if(ifdone[ifptr])
+                        {
+                          fprintf(yyout,"If block executed value inside %.2f\n",$6);
+                        }
+                        
+                        ifdone[ifptr] = 0;
+                        ifptr--;
+                    }
+
+        ;
+ifexp   : EXPRESSION 
+                    {
+                        ifptr++;
+                        ifdone[ifptr] = 0;
+                        if($1)
+                        {
+                            ifdone[ifptr] = 1;
+                        }
+                        
+                    }
+        ;
+elseif  : /* empty */
+        | elseif ELSEIF LFBR EXPRESSION RFBR LB istate SEMI RB 
+                    {
+                        if($4 && ifdone[ifptr] == 0){
+                            fprintf(yyout,"Else if block executed and value of expression %f\n",$4);
+                            ifdone[ifptr] = 1;
+                        }
+                    }
+        | elseif ELSE LB istate SEMI RB
+                    {
+                        if(ifdone[ifptr] == 0){
+                            fprintf(yyout,"\nElse block executed\n value in side %.2f\n",$4);
+                            ifdone[ifptr] = 1;
+                        }
+                    }
+        
+        ;
 istate:
     EXPRESSION  { $$ = $1; }
   ;
