@@ -54,6 +54,7 @@ main   "principal()"
 "even_odd"   { return EVEN_ODD; }
 "if"         { return IF; }
 "else"       { return ELSE; }
+"elseif"     { return ELSEIF;}
 "for"        { return FOR; }
 "while"      { return WHILE; }
 "switch"     { return SWITCH; }
