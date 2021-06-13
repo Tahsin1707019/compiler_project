@@ -1,0 +1,126 @@
+~include<...>
+principal()
+<
+    ccmmnntt  Variable Declaration
+    float a,b,c,d,e,i,j,m~
+	float f~
+	in f~
+	out (f)~
+	
+	a =10~
+	b = 4~
+	c = 3~
+	d = a~
+	m = 4~
+	p = 3~
+    b^c~
+	e = b mul f ~
+	e = a plus e~
+	e = e plus c~
+	f = (a^c ) div e~
+	sqr(e)~
+	cube(a)~
+	sqrt(e)~
+	fact(a)~
+	sin(e)~
+	cos(f)~
+	tan(f)~
+	ln(e)~
+	int y~
+	in y~
+	leap_year(y)~
+	prime(b)~
+	prime(c)~
+	sum(d)~
+	even_odd(y)~
+	if 3 lt 2
+    <
+	    3 plus 2~
+    >
+	
+    if 3 gt 4
+    <
+        5 mul 5~
+    >
+    else
+    <
+	    7^5~
+    >
+	
+	if 8 ne 9
+	<  
+	    if 4 lt 6
+	    < 
+		    fact(8)~
+		>
+		else
+		<
+		    7~
+		>
+	>
+	else
+	< 
+	    if 4 lt 4
+	    < 
+		    6 mul 7~
+	    >   
+	>
+	
+	if  2 gt 2
+	< 
+	    if 4 ge 5
+	   < 
+		    6 mul 7~
+	    >
+		else
+		<
+		   2~
+		>
+	>
+	else
+	< 
+	    if 4 ne 4
+	    < 
+		    sqr(8)~
+		>
+		else
+		<
+		    8~
+		>
+	>
+	
+	switch (d)
+    <
+	    case 1: 
+	        10 mul 5~ 
+        default:
+	        d~
+    >
+	switch (c)
+	<
+	    case 1:
+		    (10 div 2)~
+	    case 2:
+		    cube(5)~
+                      case 3:
+		    sqrt(10000)~
+	    default:
+		    sqr(12)~
+	>
+	for i=1 (3,1):
+        (1 mul 5) minus (7 div 2)~
+    
+	for j=1 (5,1):
+        (1 mul 5) plus (7 div 2)~
+		
+	while j le 7:
+        7~
+        
+	while m gt 2:
+        tan(120)~
+		
+    mult
+	  Multiline Comment Section
+	  Multiline Comment Section
+	cmnt	
+>
