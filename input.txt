@@ -2,121 +2,90 @@
 principal()
 <
     ccmmnntt  Variable Declaration
-    float a,b,c,d,e,i,j,m~
-	float f~
-	in f~
-	out (f)~
+                   outword(->hello)~
+                   3 plus 3~
+                   
+                   float _a, _b, _c, _d, _e, _i, _j, _m~
+	 
+                   float _ff~
+                   in(_ff)~
+                   out(_ff)~
 	
-	a =10~
-	b = 4~
-	c = 3~
-	d = a~
-	m = 4~
-	p = 3~
-    b^c~
-	e = b mul f ~
-	e = a plus e~
-	e = e plus c~
-	f = (a^c ) div e~
-	sqr(e)~
-	cube(a)~
-	sqrt(e)~
-	fact(a)~
-	sin(e)~
-	cos(f)~
-	tan(f)~
-	ln(e)~
-	int y~
-	in y~
-	leap_year(y)~
-	prime(b)~
-	prime(c)~
-	sum(d)~
-	even_odd(y)~
-	if 3 lt 2
+	
+	_a =10~
+	_b = 4~
+	_c = 3~
+	_d = _a~
+	_m = 4~
+	_p = 3~
+                  _b^_c~
+	_e = _b mul _f ~
+	_e = _a plus _e~
+	_e = _e plus _c~
+	_f = (_a^_c ) div _e~
+	sqr(_e)~
+	cube(_a)~
+	sqrt(_e)~
+	fact(_a)~
+	sin(_e)~
+	cos(_f)~
+	tan(_f)~
+	ln(_e)~
+	int _y~
+	in (_y)~
+	leap_year(_y)~
+	prime(_b)~
+	prime(_c)~
+	sum(_d)~
+	even_odd(_y)~
+	
+                  if(4 gt 3)
+                  < 
+                        4 plus 3~
+                   >
+                   else
+                   < 
+                        5 minus 3~
+                    >
+                  
+	if(4 lt 3)
+                 < 4 plus 3~
+                  >
+                  elseif(5 gt 3)
+                  < 6 plus 10~
+                   >
+                   else
+                   < 1~
+                   >
+
+	switch (_d)
     <
-	    3 plus 2~
-    >
-	
-    if 3 gt 4
-    <
-        5 mul 5~
-    >
-    else
-    <
-	    7^5~
-    >
-	
-	if 8 ne 9
-	<  
-	    if 4 lt 6
-	    < 
-		    fact(8)~
-		>
-		else
-		<
-		    7~
-		>
-	>
-	else
-	< 
-	    if 4 lt 4
-	    < 
-		    6 mul 7~
-	    >   
-	>
-	
-	if  2 gt 2
-	< 
-	    if 4 ge 5
-	   < 
-		    6 mul 7~
-	    >
-		else
-		<
-		   2~
-		>
-	>
-	else
-	< 
-	    if 4 ne 4
-	    < 
-		    sqr(8)~
-		>
-		else
-		<
-		    8~
-		>
-	>
-	
-	switch (d)
-    <
-	    case 1: 
+	    1: 
 	        10 mul 5~ 
-        default:
-	        d~
+                      default:
+	        _d~
     >
-	switch (c)
+	switch (_c)
 	<
-	    case 1:
+	    1:
 		    (10 div 2)~
-	    case 2:
+	    2:
 		    cube(5)~
-                      case 3:
+                       3:
 		    sqrt(10000)~
 	    default:
 		    sqr(12)~
 	>
-	for i=1 (3,1):
+	for _i=1 (3,1):
         (1 mul 5) minus (7 div 2)~
     
-	for j=1 (5,1):
+	for _j=1 (5,1):
         (1 mul 5) plus (7 div 2)~
 		
-	while j le 7:
+	while _j le 7:
         7~
         
-	while m gt 2:
+	while _m gt 2:
         tan(120)~
 		
     mult
