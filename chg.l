@@ -9,8 +9,9 @@
 %}
 
 header "~include<...>"
-digit  [0-9]
-id     [a-z]
+char [a-zA-Z]
+digit [0-9]
+special [$_@]
 main   "principal()"
 
 
@@ -19,9 +20,10 @@ main   "principal()"
 {main}       { return MAIN_FUNC; }
 "int"        { return INT; }
 "float"      { return FLOAT; }
-{id}         { yylval.itype = *yytext - 'a'; return VAR; }
-"in"       { return INPUT; }
-"out"      { return OUTPUT; }
+"char"       { return CHAR;}
+"_"({char}|{digit}|{special})+ { strcpy(yylval.text,yytext);return ID;}
+"in"        { return INPUT; }
+"out"       { return OUTPUT; }
 "plus"          { return ADD; }
 "minus"          { return SUB; }
 "mul"          { return MUL; }
