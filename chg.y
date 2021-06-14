@@ -6,21 +6,67 @@
   #define PI 3.14159265
   extern FILE *yyin;
   extern FILE *yyout;
-  int available[26],varcheck=0,switch_check=0;
+  int varcheck=0,switch_check=0;
   float var_switch;
   int ifval[1000];
   int ifptr = -1;
   int ifdone[1000];
+  int ptr = 0;
   float value[1000];
+  char varlist[1000][1000];
+
+    float isdeclared(char str[]){
+        int i;
+        for(i = 0; i < ptr; i++){
+            if(strcmp(varlist[i],str) == 0) return 1;
+        }
+        return 0;
+    }
+    /// if already declared return 0 or add new value and return 1;
+    float addnewval(char str[],float val){
+        if(isdeclared(str) == 1) return 0;
+        strcpy(varlist[ptr],str);
+        value[ptr] = val;
+        ptr++;
+        return 1;
+    }
+
+    ///get the value of corresponding string
+    float getval(char str[]){
+        int indx = -1;
+        int i;
+        for(i = 0; i < ptr; i++){
+            if(strcmp(varlist[i],str) == 0) {
+                indx = i;
+                break;
+            }
+        }
+        return value[indx];
+    }
+    float setval(char str[], float val){
+        int indx = -1;
+        int i;
+        for(i = 0; i < ptr; i++){
+            if(strcmp(varlist[i],str) == 0) {
+                indx = i;
+                break;
+            }
+        }
+        value[indx] = val;
+
+    }
+
+
 %}
 
 %union { 
   int itype;
-  double dtype;   
+  double dtype;
+  char text[1000];   
 }
 
 %token <dtype> NUM
-%token <itype> VAR
+
 %type <dtype> TERM
 %type <dtype> FACTOR
 %type <dtype> DIGIT
@@ -28,8 +74,9 @@
 %type <dtype> STATEMENT
 %type <dtype> LOOP
 %type <dtype> istate
+%type <text> ID
 
-%token MAIN_FUNC INT FLOAT INPUT OUTPUT ADD SUB MUL DIV EXPONEN SQR SQRT CUBE SINE COSINE TANGENT LN EQUALS LESS_THAN GREATER_THAN LESS_EQUALS GREATER_EQUALS NE COMA SEMI COLON LFBR RFBR LB RB FACTORIAL Leap_Year PRIME EVEN_ODD SUM_OF_NUMBERS IF ELSE ELSEIF FOR WHILE SWITCH DEFAULT
+%token MAIN_FUNC INT FLOAT INPUT OUTPUT ADD SUB MUL DIV EXPONEN SQR SQRT CUBE SINE COSINE TANGENT LN EQUALS LESS_THAN GREATER_THAN LESS_EQUALS GREATER_EQUALS NE COMA ID SEMI COLON LFBR RFBR LB RB FACTORIAL Leap_Year PRIME EVEN_ODD SUM_OF_NUMBERS IF ELSE ELSEIF FOR WHILE SWITCH DEFAULT CHAR
 %nonassoc IF
 %nonassoc ELSE
 %left LESS_THAN GREATER_THAN LESS_EQUALS GREATER_EQUALS
@@ -49,6 +96,9 @@ CSTATEMENT:
     | CSTATEMENT SWITCH_CASE
     | CSTATEMENT ifelse  
     | CSTATEMENT DECLARATION
+    | CSTATEMENT ASSIGNMENT
+    | CSTATEMENT print
+    | CSTATEMENT scan
     ;
 
 STATEMENT:
@@ -56,39 +106,40 @@ STATEMENT:
                                 $$ = $1;  
                                 fprintf(yyout,"Value of expression : %.2f\n",$1);
                             }
-    | VAR EQUALS EXPRESSION SEMI
-                            {                             
-                                if(available[$1] == 1)
-                                {
-                                    value[$1] = $3;
-                  $$ = value[$1];
-                                    fprintf(yyout,"%c assigned %.2f\n",$1+97,$3);
-                                }
-                else
-                                  fprintf(yyout,"%c not declared\n",$1+97);
-                }
+    
 
-    | INPUT VAR SEMI         {
-                                printf("User Input for %c\n",$2+97);
-                                if(available[$2] == 1) 
-                                { 
-                                    fprintf(yyout,"Value taken from user for %c\n",$2+97);
-                                    float a;
-                                    scanf("%f",&a);
-                                    value[$2] = a;
-                }
-                else
-                                    fprintf(yyout,"%c not declared\n",$2+97);
-                            }
-    | OUTPUT LFBR VAR RFBR SEMI 
-                          { 
-                                if(available[$3] == 1) 
-                                    fprintf(yyout,"Value of %c is %.2f\n",$3+97,value[$3]);
-                else
-                                    fprintf(yyout,"%c not declared\n",$3+97);
-
-                            }
+    
   ;
+
+print       : OUTPUT LFBR ID RFBR SEMI 
+                    {
+                        if(!isdeclared($3)){
+                            fprintf(yyout,"Compilation Error: Variable %s is not declared\n",$3);
+                        }
+                        else{
+                            float v = getval($3);
+                            fprintf(yyout," the value of %s is %f\n",$3,v);
+                        }
+                    }
+            
+            
+            ;
+
+scan        : INPUT LFBR ID RFBR SEMI
+                    {
+                       if(!isdeclared($3)){
+                            fprintf(yyout,"Compilation Error: Variable %s is not declared\n",$3);
+                        }
+                        else{
+                            float inp;
+                            printf("enter value for %s\n",$3);
+                            scanf("%f",&inp);
+                            setval($3,inp);
+                            fprintf(yyout,"value taken for %s and value is %f\n",$3,inp);
+                        }
+                    }
+            ;        
+
 FUNCTIONS:
       Leap_Year istate SEMI   {
                               int n = (int)$2;
@@ -128,19 +179,20 @@ FUNCTIONS:
                           }
     ;
 LOOP:
-      FOR VAR EQUALS NUM LFBR NUM COMA NUM RFBR COLON istate SEMI
+      FOR ID EQUALS NUM LFBR NUM COMA NUM RFBR COLON istate SEMI
                           {
-                  if(available[$2] == 1)
+                  if(isdeclared($2))
                                 {
                     fprintf(yyout,"For loop Found\n");
+                    float insidefor;
                     if($4 <= $6)
-                                    {
-                      for(value[$2] = $4; value[$2] <= $6; value[$2] += $8)
+                                    {              
+                      for(insidefor = $4; insidefor <= $6; insidefor += $8)
                                             fprintf(yyout,"Value in for loop %.2f\n",$11);
                   }
                   else
                   {
-                      for(value[$2] = $4; value[$2] > $6; value[$2] -= $6)
+                      for(insidefor = $4; insidefor > $6; insidefor -= $6)
                                             fprintf(yyout,"Value in for loop: %.2f\n",$11);
                   }
                                 }
@@ -148,12 +200,12 @@ LOOP:
                                   fprintf(yyout,"%c not declared\n",$2+97); 
               }
   
-  | WHILE VAR LESS_EQUALS NUM COLON istate SEMI
+  | WHILE ID LESS_EQUALS NUM COLON istate SEMI
                             {
-                  float a = value[$2];
+                  float a = getval($2);
                 float b = $4;
                 $$ = $6;
-                if((available[$2] == 1) && (a <= b))
+                if((isdeclared($2)) && (a <= b))
                 {
                     fprintf(yyout,"While loop found & it works properly!\n");
                                     while(a <= b)
@@ -162,17 +214,17 @@ LOOP:
                                         a += 1;
                       if(a > b) break;
                                     }
-                    value[$2] = a;
+                    setval($2,a);
                 }
                 else
                     fprintf(yyout,"While loop found but either condition false or variable undeclared!\n");
                             }
-   | WHILE VAR LESS_THAN NUM COLON istate SEMI
+   | WHILE ID LESS_THAN NUM COLON istate SEMI
                             {
-                  float a = value[$2];
+                  float a = getval($2);
                 float b = $4;
                 $$ = $6;
-                if((available[$2] == 1) && (a < b))
+                if((isdeclared($2)) && (a < b))
                 {
                     fprintf(yyout,"While loop found & it works properly!\n");
                                     while(a < b)
@@ -181,17 +233,17 @@ LOOP:
                                         a += 1;
                       if(a >= b) break;
                                     }
-                    value[$2] = a;
+                    setval($2,a);
                 }
                 else
                     fprintf(yyout,"While loop found but either condition false or variable undeclared!\n");
                             }                         
-  | WHILE VAR GREATER_EQUALS NUM COLON istate SEMI
+  | WHILE ID GREATER_EQUALS NUM COLON istate SEMI
                             {
-                  float a = value[$2];
+                  float a = getval($2);
                 float b = $4;
                 $$ = $6;
-                if((available[$2] == 1) && (a >= b))
+                if((isdeclared($2)) && (a >= b))
                 {
                     fprintf(yyout,"While loop found & it works properly!\n");
                                     while(a >= b)
@@ -200,17 +252,17 @@ LOOP:
                                         a -= 1;
                       if(a < b) break;
                                     }
-                    value[$2] = a;
+                    setval($2,a);
                 }
                 else
                     fprintf(yyout,"While loop found but either condition false or variable undeclared!\n");
                             }
-    | WHILE VAR GREATER_THAN NUM COLON istate SEMI
+    | WHILE ID GREATER_THAN NUM COLON istate SEMI
                             {
-                  float a = value[$2];
+                  float a = getval($2);
                 float b = $4;
                 $$ = $6;
-                if((available[$2] == 1) && (a > b))
+                if((isdeclared($2)) && (a > b))
                 {
                     fprintf(yyout,"While loop found & it works properly!\n");
                                     while(a > b)
@@ -219,7 +271,7 @@ LOOP:
                                         a -= 1;
                       if(a <= b) break;
                                     }
-                    value[$2] = a;
+                    setval($2,a);
                 }
                 else
                     fprintf(yyout,"While loop found but either condition false or variable undeclared!\n");
@@ -298,42 +350,51 @@ elseif  : /* empty */
 istate:
     EXPRESSION  { $$ = $1; }
   ;
-DECLARATION:
-    TYPE VARIABLE SEMI  { if(varcheck!=0) 
-                          fprintf(yyout,"Variable declared\n");
-            }
-  ;
-TYPE:
-    FLOAT
-  | INT
-  ;
-VARIABLE:
-    VARIABLE COMA VAR   {
-                          if(available[$3] == 1)
-                            {
-                  fprintf(yyout,"%c already declared\n",$3+97);
-                varcheck =0;
-                return 0;
-              }
-                            else
-              {   available[$3] = 1;
-                  varcheck=1;
-              }
+
+DECLARATION : type variables SEMI 
+            ;
+type        : INT | FLOAT | CHAR 
+            ;
+variables   : variables COMA var 
+            | var 
+            ;
+var    : ID    
+                    {
+                        //printf("%s\n",$1);
+                        float x = addnewval($1,0);
+                        fprintf(yyout,"variable %s declared nicely!!\n",$1);
+                        if(!x) {
+                            fprintf(yyout,"Compilation Error:Variable %s is already declared\n",$1);
                         }
-    | VAR             {
-                            if(available[$1] == 1)
-                            {
-                  fprintf(yyout,"%c already declared\n",$1+97);
-                varcheck = 0;
-                return 0;
-              }
-                            else
-              {
-                  available[$1] = 1;
-                varcheck = 1;
-              }
-                        }               
-  ;
+
+                    }
+            | ID EQUALS EXPRESSION SEMI  
+                    {
+                        //printf("%s %d\n",$1,$3);
+                        float x = addnewval($1,$3);
+                        if(!x) {
+                            fprintf(yyout,"Compilation Error: Variable %s is already declared\n",$1);
+                            }
+                    }
+
+            ;
+
+
+ASSIGNMENT : ID EQUALS EXPRESSION SEMI  
+                    {
+                        if(!isdeclared($1)) {
+                            fprintf(yyout,"Compilation Error: Variable %s is not declared\n",$1);
+                            
+                        }
+                        else{
+                            fprintf(yyout,"value set for %s\n",$1);
+                            setval($1,$3);
+                        }
+                    }
+            ;        
+
+
+
 EXPRESSION:
       EXPRESSION ADD TERM { $$ = $1 + $3; }
     | EXPRESSION SUB TERM { $$ = $1 - $3; }
@@ -390,11 +451,18 @@ FACTOR:
     | DIGIT                   { $$ = $1; }
   ;
 DIGIT:  
-    NUM                   { $$ = $1; }
-    | VAR                 { 
-                               if(available[$1] == 1) 
-                                  $$ = value[$1];
-              }
+     NUM                   { $$ = $1; }
+    | ID                 {
+                            if(!isdeclared($1))
+                            {
+                                fprintf(yyout,"Compilation Error: Variable %s is not declared\n",$1);
+                            }
+                            else
+                            {
+                                $$=getval($1);
+                                //fprintf(yyout,"The value of %s is %f\n",$1,$$);
+                            }
+                          }
     |LFBR EXPRESSION RFBR { $$ = $2; }
     ; 
 %%
