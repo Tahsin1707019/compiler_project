@@ -1,0 +1,73 @@
+This is a header file
+Single Line Comment
+here is your direct out hello
+Value of expression : 6.00
+variable _a declared nicely!!
+variable _b declared nicely!!
+variable _c declared nicely!!
+variable _d declared nicely!!
+variable _e declared nicely!!
+variable _i declared nicely!!
+variable _j declared nicely!!
+variable _m declared nicely!!
+variable _ff declared nicely!!
+value taken for _ff and value is 3.000000
+ the value of _ff is 3.000000
+value set for _a
+value set for _b
+value set for _c
+value set for _d
+value set for _m
+Compilation Error: Variable _p is not declared
+Value of expression : 64.00
+Compilation Error: Variable _f is not declared
+value set for _e
+value set for _e
+value set for _e
+Compilation Error: Variable _f is not declared
+Value of expression : 625.00
+Value of expression : 1000.00
+Value of expression : 5.00
+Value of expression : 3628800.00
+Value of expression : 0.42
+Compilation Error: Variable _f is not declared
+Value of expression : 1.00
+Compilation Error: Variable _f is not declared
+Value of expression : 0.05
+Value of expression : 3.22
+variable _y declared nicely!!
+value taken for _y and value is 4.000000
+4 leap year
+No! 4 not prime
+Yes! 3 prime
+Summation of 1st 10 numbers is 55
+4 Even Number
+If block executed value inside 7.00
+Else if block executed and value of expression 1.000000
+If block executed value inside 7.00
+Default Block executed and the value is 10.00
+Case Executed inside switch 100.000000
+For loop Found
+Value in for loop 1.50
+Value in for loop 1.50
+Value in for loop 1.50
+For loop Found
+Value in for loop 8.50
+Value in for loop 8.50
+Value in for loop 8.50
+Value in for loop 8.50
+Value in for loop 8.50
+While loop found & it works properly!
+Value in while loop: 7.00
+Value in while loop: 7.00
+Value in while loop: 7.00
+Value in while loop: 7.00
+Value in while loop: 7.00
+Value in while loop: 7.00
+Value in while loop: 7.00
+Value in while loop: 7.00
+While loop found & it works properly!
+Value in while loop: 4.00
+Value in while loop: 3.00
+Multiline Comment
+Execution Done!
